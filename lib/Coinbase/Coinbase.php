@@ -2,7 +2,8 @@
 
 class Coinbase
 {
-    const API_BASE = 'https://coinbase.com/api/v1/';
+    const API_BASE = 'https://api.sandbox.coinbase.com/v1/';
+    const SANDBOX_API_BASE = 'https://api.sandbox.coinbase.com/v1/';
 
     // Authentication
     private $_useOauth = false;
@@ -13,9 +14,9 @@ class Coinbase
 
     private $_rpc;
 
-    public static function withApiKey($key, $secret)
+    public static function withApiKey($key, $secret, $sandbox=FALSE)
     {
-        $coinbase = new Coinbase(null);
+        $coinbase = new Coinbase(null, null, $sandbox);
         $coinbase->_useOauth = false;
         $coinbase->_useSimpleApiKey = false;
         $coinbase->_apiKey = array($key, $secret);
@@ -42,7 +43,7 @@ class Coinbase
     }
 
     // This constructor is deprecated.
-    public function __construct($apiKeyOrOauth, $tokens=null)
+    public function __construct($apiKeyOrOauth, $tokens=null, $sandbox=FALSE)
     {
         if ($tokens !== null) {
             // OAuth
@@ -55,7 +56,7 @@ class Coinbase
             $this->_useSimpleApiKey = true;
         }
 
-        $this->_rpc = new Coinbase_Rpc(new Coinbase_Requestor(), $this);
+        $this->_rpc = new Coinbase_Rpc(new Coinbase_Requestor(), $this, $sandbox);
     }
 
     public function getAuthenticationData()
